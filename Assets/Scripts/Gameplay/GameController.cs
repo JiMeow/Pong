@@ -1,5 +1,7 @@
 using UnityEngine;
 using RunningFishes.Pong.Players;
+using RunningFishes.Pong.Ball;
+using RunningFishes.Pong.Multiplayer;
 
 namespace RunningFishes.Pong.Gameplay
 {
