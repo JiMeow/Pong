@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-namespace RunningFishes.Pong.Player
+namespace RunningFishes.Pong.Players
 {
     public class PlayerMovementController : MonoBehaviour
     {
