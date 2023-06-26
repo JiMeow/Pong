@@ -11,10 +11,12 @@ namespace RunningFishes.Pong.Player
         [SerializeField]
         private float ceilingBorder;
 
+        [SerializeField]
+        private PhotonView photonView;
+
         private void Update()
         {
-            if (PhotonNetwork.IsMasterClient) return;
-
+            if (!photonView.IsMine) return;
             SetPlayerPosition();
         }
 
