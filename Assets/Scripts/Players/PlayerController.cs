@@ -22,7 +22,6 @@ namespace RunningFishes.Pong.Players
         {
             GameObject player = (GameObject)Resources.Load("Player");
             int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            Debug.Log(playerCount);
             switch (playerCount)
             {
                 case 1:
@@ -45,20 +44,9 @@ namespace RunningFishes.Pong.Players
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            int playerCount = PhotonNetwork.CountOfPlayersInRooms;
-            switch (playerCount)
-            {
-                case 1:
-                    playerPaddle.transform.position = new Vector3(-7.5f, 0, -1);
-                    break;
+            if (playerPaddle == null) return;
 
-                case 2:
-                    playerPaddle.transform.position = new Vector3(7.5f, 0, -1);
-                    break;
-
-                default:
-                    break;
-            }
+            playerPaddle.transform.position = new Vector3(-7.5f, 0, -1);
         }
     }
 }

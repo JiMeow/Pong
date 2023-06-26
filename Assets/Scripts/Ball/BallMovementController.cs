@@ -1,16 +1,45 @@
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace RunningFishes.Pong.Ball
 {
     public class BallMovementController : MonoBehaviour
     {
-        private void Start()
+        [SerializeField]
+        private Rigidbody2D rb;
+
+        public void Init()
         {
-            // add force to the ball in left or right direction (degree with horizontal axis less than 60 degree)
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public void StartGame()
+        {
             float randomDegree = Random.Range(-60, 60);
             float randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             float randomForce = Random.Range(10, 15);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(randomDirection * randomForce * Mathf.Cos(randomDegree * Mathf.Deg2Rad), randomForce * Mathf.Sin(randomDegree * Mathf.Deg2Rad)), ForceMode2D.Impulse);
+            BroadcastBallData(transform.position, rb.velocity);
+        }
+
+        private void BroadcastBallData(Vector3 position, Vector2 speed)
+        {
+            object[] data = new object[] { position, speed };
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            PhotonNetwork.RaiseEvent((byte)MultiplayerEventCode.BallData, data, raiseEventOptions, SendOptions.SendReliable);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartGame();
+            }
         }
     }
 }

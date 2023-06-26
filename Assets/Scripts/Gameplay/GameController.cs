@@ -21,14 +21,25 @@ namespace RunningFishes.Pong.Gameplay
 
         public PlayerController PlayerController => playerController;
 
+        [SerializeField]
+        private BallController ballController;
+
+        public BallController BallController => ballController;
+
+        private MultiplayerController multiplayerController;
+
         public void Init()
         {
             playerController.Init();
+            ballController.Init();
+            multiplayerController = new MultiplayerController();
         }
 
         public void OnDestroy()
         {
             playerController.Dispose();
+            ballController.Dispose();
+            multiplayerController.Dispose();
         }
     }
 }
