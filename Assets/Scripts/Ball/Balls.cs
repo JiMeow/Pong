@@ -1,7 +1,9 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using RunningFishes.Pong.Gameplay;
 using RunningFishes.Pong.Multiplayer;
+using System.Collections;
 using UnityEngine;
 
 namespace RunningFishes.Pong.Ball
@@ -50,6 +52,26 @@ namespace RunningFishes.Pong.Ball
             }
         }
 
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.gameObject.CompareTag("Player1Base"))
+            {
+                GameController.instance.ScoreController.Player2Score++;
+                // TODO: make state in game for reset ballpropeties
+                ResetBallProperties();
+                // TODO: make state in game for start new game (new score game not end yet)
+                StartCoroutine(StartNewGameCoroutine());
+            }
+            if (collision.gameObject.CompareTag("Player2Base"))
+            {
+                GameController.instance.ScoreController.Player1Score++;
+                // TODO: make state in game for reset ballpropeties
+                ResetBallProperties();
+                // TODO: make state in game for start new game (new score game not end yet)
+                StartCoroutine(StartNewGameCoroutine());
+            }
+        }
+
         private void OnCollisionExit2D(Collision2D collision)
         {
             if (collision.gameObject.CompareTag("Player"))
@@ -59,6 +81,11 @@ namespace RunningFishes.Pong.Ball
 
                 Vector2 speed = rb.velocity;
                 Vector3 position = transform.position;
+
+                // increase velocity for 1.1f per bounce with paddle
+                rb.velocity *= 1.1f;
+                speed *= 1.1f;
+
                 BroadcastBallData(position, speed);
             }
         }
@@ -74,6 +101,18 @@ namespace RunningFishes.Pong.Ball
         {
             transform.position = position;
             rb.velocity = velocity;
+        }
+
+        private void ResetBallProperties()
+        {
+            transform.position = new Vector3(0, 0, -1);
+            rb.velocity = Vector2.zero;
+        }
+
+        private IEnumerator StartNewGameCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+            gameObject.GetComponent<BallMovementController>().StartGame();
         }
     }
 }

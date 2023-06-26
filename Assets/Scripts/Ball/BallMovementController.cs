@@ -1,8 +1,10 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using RunningFishes.Pong.Constant;
 using RunningFishes.Pong.Multiplayer;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RunningFishes.Pong.Ball
 {
@@ -23,7 +25,7 @@ namespace RunningFishes.Pong.Ball
         {
             float randomDegree = Random.Range(-60, 60);
             float randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
-            float randomForce = Random.Range(10, 15);
+            float randomForce = Random.Range(7, 10);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(randomDirection * randomForce * Mathf.Cos(randomDegree * Mathf.Deg2Rad), randomForce * Mathf.Sin(randomDegree * Mathf.Deg2Rad)), ForceMode2D.Impulse);
             BroadcastBallData(transform.position, rb.velocity);
         }
@@ -37,9 +39,14 @@ namespace RunningFishes.Pong.Ball
 
         private void Update()
         {
+            // TODO: remove this this is debug
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 StartGame();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                SceneManager.LoadScene(SceneName.Lobby);
             }
         }
     }

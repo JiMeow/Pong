@@ -2,6 +2,8 @@ using UnityEngine;
 using RunningFishes.Pong.Players;
 using RunningFishes.Pong.Ball;
 using RunningFishes.Pong.Multiplayer;
+using RunningFishes.Pong.UI;
+using RunningFishes.Pong.Score;
 
 namespace RunningFishes.Pong.Gameplay
 {
@@ -28,13 +30,22 @@ namespace RunningFishes.Pong.Gameplay
 
         public BallController BallController => ballController;
 
+        [SerializeField]
+        private UIController uiController;
+
+        public UIController UIController => uiController;
+
         private MultiplayerController multiplayerController;
+        private ScoreController scoreController;
+        public ScoreController ScoreController => scoreController;
 
         public void Init()
         {
             playerController.Init();
             ballController.Init();
             multiplayerController = new MultiplayerController();
+            scoreController = new ScoreController();
+            uiController.Init(scoreController);
         }
 
         public void OnDestroy()
@@ -42,6 +53,8 @@ namespace RunningFishes.Pong.Gameplay
             playerController.Dispose();
             ballController.Dispose();
             multiplayerController.Dispose();
+            scoreController.Dispose();
+            uiController.Dispose();
         }
     }
 }
