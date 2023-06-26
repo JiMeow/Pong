@@ -7,14 +7,23 @@ namespace RunningFishes.Pong.Players
     public class PlayerController : MonoBehaviourPunCallbacks
     {
         private GameObject playerPaddle;
+        private bool isInit = false;
 
         public void Init()
         {
+            if (isInit) return;
+
+            isInit = true;
+
             CreateCurrentPlayer();
         }
 
         public void Dispose()
         {
+            if (!isInit) return;
+
+            isInit = false;
+
             DestroyCurrentPlayer();
         }
 

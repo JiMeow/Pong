@@ -4,6 +4,7 @@ using RunningFishes.Pong.Ball;
 using RunningFishes.Pong.Multiplayer;
 using RunningFishes.Pong.UI;
 using RunningFishes.Pong.Score;
+using RunningFishes.Pong.State;
 
 namespace RunningFishes.Pong.Gameplay
 {
@@ -36,6 +37,7 @@ namespace RunningFishes.Pong.Gameplay
         public UIController UIController => uiController;
 
         private MultiplayerController multiplayerController;
+        private StateController stateController;
         private ScoreController scoreController;
         public ScoreController ScoreController => scoreController;
 
@@ -44,6 +46,7 @@ namespace RunningFishes.Pong.Gameplay
             playerController.Init();
             ballController.Init();
             multiplayerController = new MultiplayerController();
+            stateController = new StateController();
             scoreController = new ScoreController();
             uiController.Init(scoreController);
         }
@@ -53,6 +56,7 @@ namespace RunningFishes.Pong.Gameplay
             playerController.Dispose();
             ballController.Dispose();
             multiplayerController.Dispose();
+            stateController.Dispose();
             scoreController.Dispose();
             uiController.Dispose();
         }
