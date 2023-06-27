@@ -19,6 +19,10 @@ namespace RunningFishes.Pong.Gameplay
                 instance = this;
                 Init();
             }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         [SerializeField]
