@@ -15,6 +15,11 @@ namespace RunningFishes.Pong.State
             OnStateChanged?.Invoke(state);
         }
 
+        public StateController()
+        {
+            RaiseStateChanged(States.Prestart);
+        }
+
         public void Dispose()
         {
             // Do nothing

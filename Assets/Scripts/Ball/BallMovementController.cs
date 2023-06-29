@@ -1,10 +1,9 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using RunningFishes.Pong.Constant;
 using RunningFishes.Pong.Multiplayer;
+using RunningFishes.Pong.State;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RunningFishes.Pong.Ball
 {
@@ -13,16 +12,48 @@ namespace RunningFishes.Pong.Ball
         [SerializeField]
         private Rigidbody2D rb;
 
-        public void Init()
+        private StateController stateController;
+        private bool isSubscribed = false;
+
+        public void Init(StateController stateController)
         {
+            this.stateController = stateController;
+            Subscribe();
         }
 
         public void Dispose()
         {
+            Unsubscribe();
         }
 
-        public void StartGame()
+        private void Subscribe()
         {
+            if (isSubscribed) return;
+
+            isSubscribed = true;
+
+            if (stateController != null)
+            {
+                stateController.OnStateChanged += StartGame;
+            }
+        }
+
+        private void Unsubscribe()
+        {
+            if (!isSubscribed) return;
+
+            isSubscribed = false;
+
+            if (stateController != null)
+            {
+                stateController.OnStateChanged -= StartGame;
+            }
+        }
+
+        public void StartGame(States state)
+        {
+            if (state != States.Playing) return;
+
             float randomDegree = Random.Range(-60, 60);
             float randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             float randomForce = Random.Range(7, 10);
@@ -35,19 +66,6 @@ namespace RunningFishes.Pong.Ball
             object[] data = new object[] { position, speed };
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
             PhotonNetwork.RaiseEvent((byte)MultiplayerEventCode.BallData, data, raiseEventOptions, SendOptions.SendReliable);
-        }
-
-        private void Update()
-        {
-            // TODO: remove this this is debug
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                StartGame();
-            }
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                SceneManager.LoadScene(SceneName.Lobby);
-            }
         }
     }
 }

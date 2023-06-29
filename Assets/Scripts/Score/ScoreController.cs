@@ -1,3 +1,4 @@
+using RunningFishes.Pong.State;
 using System;
 
 namespace RunningFishes.Pong.Score
@@ -16,6 +17,8 @@ namespace RunningFishes.Pong.Score
         /// </summary>
         public event Action<int> OnPlayer2ScoreChanged;
 
+        private StateController stateController;
+        private bool isSubscribed = false;
         private int player1Score = 0;
         private int player2Score = 0;
 
@@ -43,9 +46,53 @@ namespace RunningFishes.Pong.Score
             }
         }
 
+        public ScoreController(StateController stateController)
+        {
+            stateController = this.stateController;
+            Subscribe();
+        }
+
         public void Dispose()
         {
-            // Nothing to dispose
+            Unsubscribe();
+        }
+
+        private void Subscribe()
+        {
+            if (isSubscribed) return;
+
+            isSubscribed = true;
+
+            if (stateController != null)
+            {
+                stateController.OnStateChanged += OnStateChanged;
+            }
+        }
+
+        private void Unsubscribe()
+        {
+            if (!isSubscribed) return;
+
+            isSubscribed = false;
+
+            if (stateController != null)
+            {
+                stateController.OnStateChanged -= OnStateChanged;
+            }
+        }
+
+        private void OnStateChanged(States state)
+        {
+            switch (state)
+            {
+                case States.Prestart:
+                    Player1Score = 0;
+                    Player2Score = 0;
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

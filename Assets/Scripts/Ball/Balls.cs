@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using RunningFishes.Pong.Gameplay;
 using RunningFishes.Pong.Multiplayer;
+using RunningFishes.Pong.State;
 using System.Collections;
 using UnityEngine;
 
@@ -14,12 +15,16 @@ namespace RunningFishes.Pong.Ball
         private Rigidbody2D rb;
 
         private BallController ballController;
+        private StateController stateController;
 
         private bool isSubscribed = false;
 
-        public void Init(BallController ballController)
+        private float speedIncreasedConstant = 1f;
+
+        public void Init(BallController ballController, StateController stateController)
         {
             this.ballController = ballController;
+            this.stateController = stateController;
             Subscribe();
         }
 
@@ -82,9 +87,14 @@ namespace RunningFishes.Pong.Ball
                 Vector2 speed = rb.velocity;
                 Vector3 position = transform.position;
 
-                // increase velocity for 1.1f per bounce with paddle
-                rb.velocity *= 1.1f;
-                speed *= 1.1f;
+                // increase speedIncreasedConstant for 1.1f per bounce with paddle
+                rb.velocity = rb.velocity / speedIncreasedConstant;
+                speedIncreasedConstant *= 1.1f;
+                if (speedIncreasedConstant > 2.5f)
+                {
+                    speedIncreasedConstant = 2.5f;
+                }
+                rb.velocity = rb.velocity * speedIncreasedConstant;
 
                 BroadcastBallData(position, speed);
             }
@@ -112,7 +122,8 @@ namespace RunningFishes.Pong.Ball
         private IEnumerator StartNewGameCoroutine()
         {
             yield return new WaitForSeconds(1f);
-            gameObject.GetComponent<BallMovementController>().StartGame();
+            speedIncreasedConstant = 1f;
+            stateController.RaiseStateChanged(States.Playing);
         }
     }
 }
