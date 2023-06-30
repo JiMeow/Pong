@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using RunningFishes.Pong.Gameplay;
 using RunningFishes.Pong.Multiplayer;
+using RunningFishes.Pong.Score;
 using RunningFishes.Pong.State;
 using System.Collections;
 using UnityEngine;
@@ -16,15 +17,17 @@ namespace RunningFishes.Pong.Ball
 
         private BallController ballController;
         private StateController stateController;
+        private ScoreController scoreController;
 
         private bool isSubscribed = false;
 
         private float speedIncreasedConstant = 1f;
 
-        public void Init(BallController ballController, StateController stateController)
+        public void Init(BallController ballController, StateController stateController, ScoreController scoreController)
         {
             this.ballController = ballController;
             this.stateController = stateController;
+            this.scoreController = scoreController;
             Subscribe();
         }
 
@@ -43,6 +46,12 @@ namespace RunningFishes.Pong.Ball
             {
                 ballController.OnBallDataReceived += SetBallProperties;
             }
+
+            if (scoreController != null)
+            {
+                scoreController.OnPlayer1ScoreChanged += OnScoreChange;
+                scoreController.OnPlayer2ScoreChanged += OnScoreChange;
+            }
         }
 
         private void Unsubscribe()
@@ -55,6 +64,12 @@ namespace RunningFishes.Pong.Ball
             {
                 ballController.OnBallDataReceived -= SetBallProperties;
             }
+
+            if (scoreController != null)
+            {
+                scoreController.OnPlayer1ScoreChanged -= OnScoreChange;
+                scoreController.OnPlayer2ScoreChanged -= OnScoreChange;
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -65,9 +80,7 @@ namespace RunningFishes.Pong.Ball
                 if (myPaddle.gameObject.transform.position.x > 0) return;
 
                 GameController.instance.ScoreController.Player2Score++;
-
-                ResetBallProperties();
-                StartCoroutine(StartNewGameCoroutine());
+                StartGame();
             }
 
             if (collision.gameObject.CompareTag("Player2Base"))
@@ -75,9 +88,7 @@ namespace RunningFishes.Pong.Ball
                 if (myPaddle.gameObject.transform.position.x < 0) return;
 
                 GameController.instance.ScoreController.Player1Score++;
-
-                ResetBallProperties();
-                StartCoroutine(StartNewGameCoroutine());
+                StartGame();
             }
         }
 
@@ -91,7 +102,6 @@ namespace RunningFishes.Pong.Ball
                 bool isMine = collision.gameObject.GetPhotonView().IsMine;
                 if (!isMine) return;
 
-                Vector2 speed = rb.velocity;
                 Vector3 position = transform.position;
 
                 // increase speedIncreasedConstant for 1.1f per bounce with paddle
@@ -102,8 +112,7 @@ namespace RunningFishes.Pong.Ball
                     speedIncreasedConstant = 2.5f;
                 }
                 rb.velocity = rb.velocity * speedIncreasedConstant;
-
-                BroadcastBallData(position, speed);
+                BroadcastBallData(position, rb.velocity);
             }
         }
 
@@ -131,6 +140,17 @@ namespace RunningFishes.Pong.Ball
             yield return new WaitForSeconds(1f);
             speedIncreasedConstant = 1f;
             stateController.RaiseStateChanged(States.Playing);
+        }
+
+        private void OnScoreChange(int newScore)
+        {
+            StartGame();
+        }
+
+        private void StartGame()
+        {
+            ResetBallProperties();
+            StartCoroutine(StartNewGameCoroutine());
         }
     }
 }

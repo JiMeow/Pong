@@ -55,6 +55,7 @@ namespace RunningFishes.Pong.Ball
             if (!PhotonNetwork.IsMasterClient) return;
             if (state != States.Playing) return;
 
+            rb.velocity = Vector2.zero;
             float randomDegree = Random.Range(-60, 60);
             float randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
             float randomForce = Random.Range(7, 10);
