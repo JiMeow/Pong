@@ -1,3 +1,4 @@
+using Photon.Pun;
 using RunningFishes.Pong.State;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,8 @@ namespace RunningFishes.Pong.UI
 
         public void Init(StateController stateController)
         {
+            if (!PhotonNetwork.IsMasterClient) button.gameObject.SetActive(false);
+
             this.stateController = stateController;
             button.onClick.AddListener(OnStartGame);
         }
