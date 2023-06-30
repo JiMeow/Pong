@@ -59,16 +59,24 @@ namespace RunningFishes.Pong.Ball
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            GameObject myPaddle = GameController.instance.PlayerController.playerPaddle;
             if (collision.gameObject.CompareTag("Player1Base"))
             {
+                if (myPaddle.gameObject.transform.position.x > 0) return;
+
                 GameController.instance.ScoreController.Player2Score++;
+
                 // TODO: make state in game for reset ballpropeties
                 ResetBallProperties();
+
                 // TODO: make state in game for start new game (new score game not end yet)
                 StartCoroutine(StartNewGameCoroutine());
             }
+
             if (collision.gameObject.CompareTag("Player2Base"))
             {
+                if (myPaddle.gameObject.transform.position.x < 0) return;
+
                 GameController.instance.ScoreController.Player1Score++;
                 // TODO: make state in game for reset ballpropeties
                 ResetBallProperties();
@@ -81,6 +89,9 @@ namespace RunningFishes.Pong.Ball
         {
             if (collision.gameObject.CompareTag("Player"))
             {
+                var photonView = collision.gameObject.GetPhotonView();
+                if (!photonView.IsMine) return;
+
                 bool isMine = collision.gameObject.GetPhotonView().IsMine;
                 if (!isMine) return;
 

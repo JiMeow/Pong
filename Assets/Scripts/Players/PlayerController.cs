@@ -6,7 +6,7 @@ namespace RunningFishes.Pong.Players
 {
     public class PlayerController : MonoBehaviourPunCallbacks
     {
-        private GameObject playerPaddle;
+        public GameObject playerPaddle;
         private bool isInit = false;
 
         public void Init()
@@ -49,6 +49,7 @@ namespace RunningFishes.Pong.Players
         private void DestroyCurrentPlayer()
         {
             if (playerPaddle == null) return;
+
             PhotonNetwork.Destroy(playerPaddle);
         }
 
