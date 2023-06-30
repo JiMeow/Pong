@@ -39,12 +39,6 @@ namespace RunningFishes.Pong.Lobby
             joinText.text = "Join Fail";
         }
 
-        public override void OnCreatedRoom()
-        {
-            base.OnCreatedRoom();
-            PhotonNetwork.LoadLevel(gameSceneName);
-        }
-
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
             base.OnCreateRoomFailed(returnCode, message);
