@@ -43,21 +43,24 @@ namespace RunningFishes.Pong.Gameplay
         public BallController BallController => ballController;
 
         [SerializeField]
+        private ScoreController scoreController;
+
+        public ScoreController ScoreController => scoreController;
+
+        [SerializeField]
         private UIController uiController;
 
         public UIController UIController => uiController;
 
         private MultiplayerController multiplayerController;
         private StateController stateController;
-        private ScoreController scoreController;
-        public ScoreController ScoreController => scoreController;
 
         public void Init()
         {
             stateController = new StateController();
-            scoreController = new ScoreController(stateController);
+            scoreController.Init(stateController);
             playerController.Init();
-            ballController.Init(stateController);
+            ballController.Init(stateController, scoreController);
             multiplayerController = new MultiplayerController();
             uiController.Init(scoreController, stateController);
         }

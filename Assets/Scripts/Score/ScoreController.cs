@@ -1,9 +1,12 @@
+using ExitGames.Client.Photon;
+using Photon.Pun;
 using RunningFishes.Pong.State;
 using System;
+using UnityEngine;
 
 namespace RunningFishes.Pong.Score
 {
-    public class ScoreController
+    public class ScoreController : MonoBehaviourPunCallbacks
     {
         /// <summary>
         /// Event raised when player 1 score changes
@@ -30,6 +33,12 @@ namespace RunningFishes.Pong.Score
                 if (player1Score == value) return;
 
                 player1Score = value;
+
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties["Player1Score"] != player1Score)
+                {
+                    PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "Player1Score", player1Score } });
+                }
+
                 OnPlayer1ScoreChanged?.Invoke(player1Score);
             }
         }
@@ -42,11 +51,17 @@ namespace RunningFishes.Pong.Score
                 if (player2Score == value) return;
 
                 player2Score = value;
+
+                if ((int)PhotonNetwork.CurrentRoom.CustomProperties["Player2Score"] != player2Score)
+                {
+                    PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "Player2Score", player2Score } });
+                }
+
                 OnPlayer2ScoreChanged?.Invoke(player2Score);
             }
         }
 
-        public ScoreController(StateController stateController)
+        public void Init(StateController stateController)
         {
             stateController = this.stateController;
             Subscribe();
@@ -93,6 +108,17 @@ namespace RunningFishes.Pong.Score
                 default:
                     break;
             }
+        }
+
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+        {
+            base.OnRoomPropertiesUpdate(propertiesThatChanged);
+            if (propertiesThatChanged != null)
+            {
+                Player1Score = propertiesThatChanged.ContainsKey("Player1Score") ? (int)propertiesThatChanged["Player1Score"] : Player1Score;
+                Player2Score = propertiesThatChanged.ContainsKey("Player2Score") ? (int)propertiesThatChanged["Player2Score"] : Player2Score;
+            }
+            Debug.Log("player1Score: " + Player1Score + " player2Score: " + Player2Score);
         }
     }
 }
