@@ -52,6 +52,7 @@ namespace RunningFishes.Pong.Ball
 
         public void StartGame(States state)
         {
+            if (!PhotonNetwork.IsMasterClient) return;
             if (state != States.Playing) return;
 
             float randomDegree = Random.Range(-60, 60);
