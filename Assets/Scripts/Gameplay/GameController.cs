@@ -1,28 +1,35 @@
-using UnityEngine;
-using RunningFishes.Pong.Players;
+using Photon.Pun;
 using RunningFishes.Pong.Ball;
+using RunningFishes.Pong.Constant;
 using RunningFishes.Pong.Multiplayer;
-using RunningFishes.Pong.UI;
+using RunningFishes.Pong.Players;
 using RunningFishes.Pong.Score;
 using RunningFishes.Pong.State;
+using RunningFishes.Pong.UI;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RunningFishes.Pong.Gameplay
 {
-    public class GameController : MonoBehaviour
+    public class GameController : MonoBehaviourPunCallbacks
     {
         public static GameController instance { get; private set; }
 
-        public void Awake()
+        private void Awake()
         {
             if (instance == null)
             {
                 instance = this;
-                Init();
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        private void Start()
+        {
+            Init();
         }
 
         [SerializeField]
@@ -36,33 +43,50 @@ namespace RunningFishes.Pong.Gameplay
         public BallController BallController => ballController;
 
         [SerializeField]
+        private ScoreController scoreController;
+
+        public ScoreController ScoreController => scoreController;
+
+        [SerializeField]
         private UIController uiController;
 
         public UIController UIController => uiController;
 
         private MultiplayerController multiplayerController;
         private StateController stateController;
-        private ScoreController scoreController;
-        public ScoreController ScoreController => scoreController;
 
         public void Init()
         {
-            playerController.Init();
-            ballController.Init();
-            multiplayerController = new MultiplayerController();
             stateController = new StateController();
-            scoreController = new ScoreController();
-            uiController.Init(scoreController);
+            scoreController.Init(stateController);
+            playerController.Init();
+            ballController.Init(stateController, scoreController);
+            multiplayerController = new MultiplayerController();
+            uiController.Init(scoreController, stateController);
         }
 
         public void OnDestroy()
         {
-            playerController.Dispose();
+            stateController?.Dispose();
+            scoreController?.Dispose();
+            playerController?.Dispose();
             ballController.Dispose();
-            multiplayerController.Dispose();
-            stateController.Dispose();
-            scoreController.Dispose();
-            uiController.Dispose();
+            multiplayerController?.Dispose();
+            uiController?.Dispose();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                PhotonNetwork.LeaveRoom();
+            }
+        }
+
+        public override void OnLeftRoom()
+        {
+            SceneManager.LoadScene(SceneName.Lobby);
+            base.OnLeftRoom();
         }
     }
 }

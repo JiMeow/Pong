@@ -1,5 +1,6 @@
-using UnityEngine;
 using RunningFishes.Pong.Score;
+using RunningFishes.Pong.State;
+using UnityEngine;
 
 namespace RunningFishes.Pong.UI
 {
@@ -8,14 +9,19 @@ namespace RunningFishes.Pong.UI
         [SerializeField]
         private UIScoreController uiScoreController;
 
-        public void Init(ScoreController scoreController)
+        [SerializeField]
+        private UIStartGame uiStartGame;
+
+        public void Init(ScoreController scoreController, StateController stateController)
         {
             uiScoreController.Init(scoreController);
+            uiStartGame.Init(stateController);
         }
 
         public void Dispose()
         {
             uiScoreController.Dispose();
+            uiStartGame.Dispose();
         }
     }
 }

@@ -1,3 +1,5 @@
+using RunningFishes.Pong.Score;
+using RunningFishes.Pong.State;
 using System;
 using UnityEngine;
 
@@ -18,10 +20,10 @@ namespace RunningFishes.Pong.Ball
         [SerializeField]
         private BallMovementController ballMovementController;
 
-        public void Init()
+        public void Init(StateController stateController, ScoreController scoreController)
         {
-            ball.Init(this);
-            ballMovementController.Init();
+            ball.Init(this, stateController, scoreController);
+            ballMovementController.Init(stateController);
         }
 
         public void Dispose()

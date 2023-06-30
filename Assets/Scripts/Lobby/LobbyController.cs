@@ -1,4 +1,6 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 using RunningFishes.Pong.Constant;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,7 +26,14 @@ namespace RunningFishes.Pong.Lobby
         public void CreateRoom()
         {
             createText.text = "Creating...";
-            PhotonNetwork.CreateRoom(createText.text, new Photon.Realtime.RoomOptions { MaxPlayers = 2 });
+            RoomOptions roomOptions = new RoomOptions { MaxPlayers = 2 };
+            Hashtable roomProps = new Hashtable
+            {
+                { "Player1Score", 0 },
+                { "Player2Score", 0 }
+            };
+            roomOptions.CustomRoomProperties = roomProps;
+            PhotonNetwork.CreateRoom(createText.text, roomOptions);
         }
 
         public override void OnJoinedRoom()
@@ -37,12 +46,6 @@ namespace RunningFishes.Pong.Lobby
         {
             base.OnJoinRoomFailed(returnCode, message);
             joinText.text = "Join Fail";
-        }
-
-        public override void OnCreatedRoom()
-        {
-            base.OnCreatedRoom();
-            PhotonNetwork.LoadLevel(gameSceneName);
         }
 
         public override void OnCreateRoomFailed(short returnCode, string message)
