@@ -17,6 +17,7 @@ namespace RunningFishes.Pong.Gameplay
 
         public void Awake()
         {
+            Debug.Log("GameController Awake");
             if (instance == null)
             {
                 instance = this;
@@ -60,11 +61,11 @@ namespace RunningFishes.Pong.Gameplay
 
         public void OnDestroy()
         {
+            stateController.Dispose();
+            scoreController.Dispose();
             playerController.Dispose();
             ballController.Dispose();
             multiplayerController.Dispose();
-            stateController.Dispose();
-            scoreController.Dispose();
             uiController.Dispose();
         }
 

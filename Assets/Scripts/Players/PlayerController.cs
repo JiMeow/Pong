@@ -48,6 +48,11 @@ namespace RunningFishes.Pong.Players
 
         private void DestroyCurrentPlayer()
         {
+            if (playerPaddle == null)
+            {
+                Debug.LogError("Player not found");
+                return;
+            }
             PhotonNetwork.Destroy(playerPaddle);
         }
 
