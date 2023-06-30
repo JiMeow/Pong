@@ -15,18 +15,21 @@ namespace RunningFishes.Pong.Gameplay
     {
         public static GameController instance { get; private set; }
 
-        public void Awake()
+        private void Awake()
         {
-            Debug.Log("GameController Awake");
             if (instance == null)
             {
                 instance = this;
-                Init();
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        private void Start()
+        {
+            Init();
         }
 
         [SerializeField]
@@ -61,12 +64,12 @@ namespace RunningFishes.Pong.Gameplay
 
         public void OnDestroy()
         {
-            stateController.Dispose();
-            scoreController.Dispose();
-            playerController.Dispose();
+            stateController?.Dispose();
+            scoreController?.Dispose();
+            playerController?.Dispose();
             ballController.Dispose();
-            multiplayerController.Dispose();
-            uiController.Dispose();
+            multiplayerController?.Dispose();
+            uiController?.Dispose();
         }
 
         private void Update()
