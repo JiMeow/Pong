@@ -66,10 +66,7 @@ namespace RunningFishes.Pong.Ball
 
                 GameController.instance.ScoreController.Player2Score++;
 
-                // TODO: make state in game for reset ballpropeties
                 ResetBallProperties();
-
-                // TODO: make state in game for start new game (new score game not end yet)
                 StartCoroutine(StartNewGameCoroutine());
             }
 
@@ -78,9 +75,8 @@ namespace RunningFishes.Pong.Ball
                 if (myPaddle.gameObject.transform.position.x < 0) return;
 
                 GameController.instance.ScoreController.Player1Score++;
-                // TODO: make state in game for reset ballpropeties
+
                 ResetBallProperties();
-                // TODO: make state in game for start new game (new score game not end yet)
                 StartCoroutine(StartNewGameCoroutine());
             }
         }
